@@ -149,12 +149,13 @@ theorem peirce_law_weak :
 
 theorem impl_linear :
   (P → Q) ∨ (Q → P)  := by
+  by_cases hqnq: Q
   left
   intro hp
-  by_cases hq: Q
   assumption
-  ---**terminarrrr**
-
+  right
+  intro hq
+  contradiction
 
 ------------------------------------------------
 -- Interdefinability of ∨,∧
@@ -183,27 +184,99 @@ theorem conj_as_negdisj :
 
 theorem demorgan_disj :
   ¬ (P ∨ Q) → (¬ P ∧ ¬ Q)  := by
-  sorry
+  intro hnpq
+  constructor
+  by_cases hpnp: P
+  intro hp
+  have hpq: P ∨ Q := by
+    left
+    assumption
+  contradiction
+  assumption
+  by_cases hqnq: Q
+  have hpq: P ∨ Q := by
+    right
+    assumption
+  contradiction
+  assumption
+
 
 theorem demorgan_disj_converse :
   (¬ P ∧ ¬ Q) → ¬ (P ∨ Q)  := by
-  sorry
+  intro hnpnq hpq
+  rcases hnpnq
+  rcases hpq
+  contradiction
+  contradiction
 
 theorem demorgan_conj :
   ¬ (P ∧ Q) → (¬ Q ∨ ¬ P)  := by
-  sorry
+  intro h
+  by_cases hq: Q
+  right
+  intro hp
+  have hpq: P ∧ Q := by
+    constructor
+    assumption
+    assumption
+  contradiction
+  left
+  assumption
+
 
 theorem demorgan_conj_converse :
   (¬ Q ∨ ¬ P) → ¬ (P ∧ Q)  := by
-  sorry
+  intro h hpq
+  rcases hpq
+  rcases h
+  contradiction
+  contradiction
+
 
 theorem demorgan_conj_law :
   ¬ (P ∧ Q) ↔ (¬ Q ∨ ¬ P)  := by
-  sorry
+  constructor
+  intro hnpq
+  by_cases hq: Q
+  right
+  intro hp
+  have hpq: P ∧ Q := by
+    constructor
+    assumption
+    assumption
+  contradiction
+  left
+  assumption
+  intro hnpnq hpq
+  rcases hpq
+  rcases hnpnq
+  contradiction
+  contradiction
+
 
 theorem demorgan_disj_law :
   ¬ (P ∨ Q) ↔ (¬ P ∧ ¬ Q)  := by
-  sorry
+  constructor
+  intro hnpq
+  constructor
+  by_cases hpnp: P
+  intro hp
+  have hpq: P ∨ Q := by
+    left
+    assumption
+  contradiction
+  assumption
+  by_cases hqnq: Q
+  have hpq: P ∨ Q := by
+    right
+    assumption
+  contradiction
+  assumption
+  intro hnpnq hpq
+  rcases hnpnq
+  rcases hpq
+  contradiction
+  contradiction
 
 
 ------------------------------------------------
@@ -246,7 +319,8 @@ theorem uncurry_prop :
 
 theorem impl_refl :
   P → P  := by
-  sorry
+  intro h
+  exact h
 
 
 ------------------------------------------------
@@ -255,19 +329,27 @@ theorem impl_refl :
 
 theorem weaken_disj_right :
   P → (P ∨ Q)  := by
-  sorry
+  intro hp
+  left
+  assumption
 
 theorem weaken_disj_left :
   Q → (P ∨ Q)  := by
-  sorry
+  intro hq
+  right
+  assumption
 
 theorem weaken_conj_right :
   (P ∧ Q) → P  := by
-  sorry
+  intro h
+  rcases h
+  assumption
 
 theorem weaken_conj_left :
   (P ∧ Q) → Q  := by
-  sorry
+  intro h
+  rcases h
+  assumption
 
 
 ------------------------------------------------
@@ -276,11 +358,25 @@ theorem weaken_conj_left :
 
 theorem disj_idem :
   (P ∨ P) ↔ P  := by
-  sorry
+  constructor
+  intro hpp
+  rcases hpp
+  assumption
+  assumption
+  intro hp
+  left
+  assumption
 
 theorem conj_idem :
   (P ∧ P) ↔ P := by
-  sorry
+  constructor
+  intro hpp
+  rcases hpp
+  assumption
+  intro hp
+  constructor
+  assumption
+  assumption
 
 
 ------------------------------------------------
@@ -289,11 +385,14 @@ theorem conj_idem :
 
 theorem false_bottom :
   False → P := by
-  sorry
+  intro h
+  exfalso
+  exact h
 
 theorem true_top :
   P → True  := by
-  sorry
+  intro h
+  constructor
 
 
 end propositional

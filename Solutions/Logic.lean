@@ -50,7 +50,11 @@ theorem disj_comm :
 
 theorem conj_comm :
   (P ∧ Q) → (Q ∧ P)  := by
-  sorry
+  intro h
+  rcases h with ⟨hp , hq⟩
+  constructor
+  assumption
+  assumption
 
 
 ------------------------------------------------
@@ -59,11 +63,19 @@ theorem conj_comm :
 
 theorem impl_as_disj_converse :
   (¬ P ∨ Q) → (P → Q)  := by
-  sorry
+  intro h
+  intro hp
+  rcases h with (hnp | hq)
+  contradiction
+  exact hq
 
 theorem disj_as_impl :
   (P ∨ Q) → (¬ P → Q)  := by
-  sorry
+  intro h
+  intro hnp
+  rcases h with (hp | hq)
+  contradiction
+  exact hq
 
 
 ------------------------------------------------
@@ -72,15 +84,32 @@ theorem disj_as_impl :
 
 theorem impl_as_contrapositive :
   (P → Q) → (¬ Q → ¬ P)  := by
-  sorry
+  intro h hnq hp
+  have hq: Q := h hp
+  contradiction
 
 theorem impl_as_contrapositive_converse :
   (¬ Q → ¬ P) → (P → Q)  := by
-  sorry
+  intro h
+  intro hp
+  by_cases hq: Q
+  assumption
+  have hnp: ¬ P := h hq
+  contradiction
+
 
 theorem contrapositive_law :
   (P → Q) ↔ (¬ Q → ¬ P)  := by
-  sorry
+  constructor
+  intro hpq hnq hp
+  have hq: Q := hpq hp
+  contradiction
+  intro hnpnq
+  intro hp
+  by_cases hq: Q
+  assumption
+  have hnp: ¬ P := hnpnq hq
+  contradiction
 
 
 ------------------------------------------------
@@ -89,7 +118,15 @@ theorem contrapositive_law :
 
 theorem lem_irrefutable :
   ¬ ¬ (P ∨ ¬ P)  := by
-  sorry
+  intro h
+  have hpnp: P ∨ ¬ P := by
+    right
+    intro hp
+    apply h
+    left
+    assumption
+  contradiction
+
 
 
 ------------------------------------------------
@@ -98,7 +135,12 @@ theorem lem_irrefutable :
 
 theorem peirce_law_weak :
   ((P → Q) → P) → ¬ ¬ P  := by
-  sorry
+  intro h hnp
+  have hpq: P → Q := by
+    intro hp
+    contradiction
+  have hp: P := h hpq
+  contradiction
 
 
 ------------------------------------------------
@@ -107,7 +149,11 @@ theorem peirce_law_weak :
 
 theorem impl_linear :
   (P → Q) ∨ (Q → P)  := by
-  sorry
+  left
+  intro hp
+  by_cases hq: Q
+  assumption
+  ---**terminarrrr**
 
 
 ------------------------------------------------
@@ -116,11 +162,19 @@ theorem impl_linear :
 
 theorem disj_as_negconj :
   P ∨ Q → ¬ (¬ P ∧ ¬ Q)  := by
-  sorry
+  intro hpq hnpnq
+  rcases hnpnq with ⟨hnp , hnq⟩
+  rcases hpq with (hp | hq)
+  contradiction
+  contradiction
 
 theorem conj_as_negdisj :
   P ∧ Q → ¬ (¬ P ∨ ¬ Q)  := by
-  sorry
+  intro hpq hnpnq
+  rcases hpq with ⟨hp , hq⟩
+  rcases hnpnq with (hnp | hnq)
+  contradiction
+  contradiction
 
 
 ------------------------------------------------

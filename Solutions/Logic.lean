@@ -285,20 +285,63 @@ theorem demorgan_disj_law :
 
 theorem distr_conj_disj :
   P ∧ (Q ∨ R) → (P ∧ Q) ∨ (P ∧ R)  := by
-  sorry
+  intro h
+  rcases h with ⟨hp , hqr⟩
+  rcases hqr
+  left
+  constructor
+  assumption
+  assumption
+  right
+  constructor
+  assumption
+  assumption
 
 theorem distr_conj_disj_converse :
   (P ∧ Q) ∨ (P ∧ R) → P ∧ (Q ∨ R)  := by
-  sorry
+  intro h
+  rcases h with (hpq|hpr)
+  rcases hpq
+  constructor
+  assumption
+  left
+  assumption
+  rcases hpr
+  constructor
+  assumption
+  right
+  assumption
 
 theorem distr_disj_conj :
   P ∨ (Q ∧ R) → (P ∨ Q) ∧ (P ∨ R)  := by
-  sorry
+  intro h
+  rcases h with (hp | hqr)
+  constructor
+  left
+  assumption
+  left
+  assumption
+  rcases hqr
+  constructor
+  right
+  assumption
+  right
+  assumption
 
 theorem distr_disj_conj_converse :
   (P ∨ Q) ∧ (P ∨ R) → P ∨ (Q ∧ R)  := by
-  sorry
-
+  intro h
+  rcases h with ⟨hpq , hpr⟩
+  rcases hpq with (hp|hq)
+  left
+  assumption
+  rcases hpr with (hp| hr)
+  left
+  assumption
+  right
+  constructor
+  assumption
+  assumption
 
 ------------------------------------------------
 -- Currying
@@ -306,12 +349,22 @@ theorem distr_disj_conj_converse :
 
 theorem curry_prop :
   ((P ∧ Q) → R) → (P → (Q → R))  := by
-  sorry
+  intro hpqr
+  intro hp
+  intro hq
+  apply hpqr
+  constructor
+  assumption
+  assumption
+
 
 theorem uncurry_prop :
   (P → (Q → R)) → ((P ∧ Q) → R)  := by
-  sorry
-
+  intro hpqr hpq
+  rcases hpq
+  apply hpqr
+  assumption
+  assumption
 
 ------------------------------------------------
 -- Reflexivity of →
@@ -321,7 +374,6 @@ theorem impl_refl :
   P → P  := by
   intro h
   exact h
-
 
 ------------------------------------------------
 -- Weakening and contraction
@@ -351,7 +403,6 @@ theorem weaken_conj_left :
   rcases h
   assumption
 
-
 ------------------------------------------------
 -- Idempotence of ∨,∧
 ------------------------------------------------
@@ -378,7 +429,6 @@ theorem conj_idem :
   assumption
   assumption
 
-
 ------------------------------------------------
 -- Bottom, Top
 ------------------------------------------------
@@ -392,7 +442,7 @@ theorem false_bottom :
 theorem true_top :
   P → True  := by
   intro h
-  constructor
+  trivial
 
 
 end propositional
